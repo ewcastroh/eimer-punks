@@ -1,31 +1,26 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// You can also run a script with `npx hardhat run <script>`. If you do that, Hardhat
-// will compile your contracts, add the Hardhat Runtime Environment's members to the
-// global scope, and execute the script.
-const hre = require("hardhat");
+const { ethers } = require("hardhat");
 
-async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
-  const unlockTime = currentTimestampInSeconds + ONE_YEAR_IN_SECS;
+// deploy is an asynchronus funtion
+const deploy = async() => {
+    // getSigners() brings the information from configuratipn where the private key is stored.
+    // deployer is an objet that allows deploy an smart contract in the configured network. Hardhat will fill automatically.
+    const [deployer] = await ethers.getSigners();
+    console.log("Deploying smart contract with the account:", deployer.address);
 
-  const lockedAmount = hre.ethers.utils.parseEther("1");
-
-  const Lock = await hre.ethers.getContractFactory("Lock");
-  const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
-
-  await lock.deployed();
-
-  console.log(
-    `Lock with 1 ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`
-  );
+    // Definig the SC PlatziPunks in the context
+    // ethers.getContractFactory() gets informationn from build cache and brings the required information to create the methods and deploy the SC.
+    const PlatziPunks = await ethers.getContractFactory("PlatziPunks");
+    // Creating instance of deployed SC.
+    const deployed = await PlatziPunks.deploy();
+    console.log("PlatziPunks is deployed at: ", deployed.address);
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+// Calling deploy() function
+deploy()
+    // process.exit(0): Process completed then close it.
+    .then(() => process.exit(0))
+    .catch((error) => {
+        console.log(error);
+        // process.exit(1): Process with an error then close it.
+        process.exit(1);
+    });
