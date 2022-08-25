@@ -1,4 +1,5 @@
-// SPDX-License-Identifier: MITpragma solidity ^0.8.0;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
 
 contract PunkDNA {
     string[] private _accessoriesType = [
@@ -200,6 +201,22 @@ contract PunkDNA {
     ];
 
     // TODO: Calculate DNA
+    // This pseudo random function is deterministic and should not be used in production
+    function deterministicPseudoRandomDNA(uint256 _tokenId, address _minter)
+        public
+        pure
+        returns (uint256)
+    {
+        uint256 combinedParams = _tokenId + uint160(_minter);
+        bytes memory encodedParams = abi.encodePacked(combinedParams);
+        bytes32 hashedParams = keccak256(encodedParams);
+        return uint256(hashedParams);
+    }
+
+    // Get attributes
+    uint8 constant ADN_SECTION_SIZE = 2;
+
+    // TODO: Slice DNA function
     function _getDNASection(uint256 _dna, uint8 _rightDiscard)
         internal
         pure
@@ -211,11 +228,6 @@ contract PunkDNA {
                     (1 * 10**_rightDiscard)
             );
     }
-
-    // Get attributes
-    uint8 constant ADN_SECTION_SIZE = 2;
-
-    // TODO: Slice DNA function
 
     function getAccessoriesType(uint256 _dna)
         public
