@@ -7,12 +7,12 @@ const deploy = async() => {
     const [deployer] = await ethers.getSigners();
     console.log("Deploying smart contract with the account:", deployer.address);
 
-    // Definig the SC PlatziPunks in the context
+    // Definig the SC EimerPunks in the context
     // ethers.getContractFactory() gets informationn from build cache and brings the required information to create the methods and deploy the SC.
-    const PlatziPunks = await ethers.getContractFactory("PlatziPunks");
+    const EimerPunks = await ethers.getContractFactory("EimerPunks");
     // Creating instance of deployed SC.
-    const deployed = await PlatziPunks.deploy();
-    console.log("PlatziPunks is deployed at: ", deployed.address);
+    const deployed = await EimerPunks.deploy();
+    console.log("EimerPunks is deployed at: ", deployed.address);
 }
 
 // Calling deploy() function
