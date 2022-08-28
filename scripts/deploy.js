@@ -11,7 +11,7 @@ const deploy = async() => {
     // ethers.getContractFactory() gets informationn from build cache and brings the required information to create the methods and deploy the SC.
     const EimerPunks = await ethers.getContractFactory("EimerPunks");
     // Creating instance of deployed SC.
-    const deployed = await EimerPunks.deploy();
+    const deployed = await EimerPunks.deploy(10000);
     console.log("EimerPunks is deployed at: ", deployed.address);
 }
 

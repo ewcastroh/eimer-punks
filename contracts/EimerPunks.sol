@@ -4,11 +4,13 @@ pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "./EimerPunksDNA.sol";
 
 contract EimerPunks is ERC721, ERC721Enumerable, EimerPunksDNA {
     using Counters for Counters.Counter;
+    using Strings for uint256;
 
     string private constant AVATAAARS_BASE_URL = "https://avataaars.io/";
 
@@ -23,12 +25,12 @@ contract EimerPunks is ERC721, ERC721Enumerable, EimerPunksDNA {
     function safeMint() public {
         uint256 currentTokenId = _tokenIdCounter.current();
         require(currentTokenId < maxSupply, "No EimerPunks left :(");
-        _tokenIdCounter.increment();
         tokenDNA[currentTokenId] = deterministicPseudoRandomDNA(
             currentTokenId,
             msg.sender
         );
         _safeMint(msg.sender, currentTokenId);
+        _tokenIdCounter.increment();
     }
 
     function _baseURI() internal pure override returns (string memory) {
@@ -95,7 +97,7 @@ contract EimerPunks is ERC721, ERC721Enumerable, EimerPunksDNA {
         string memory jsonURI = Base64.encode(
             abi.encodePacked(
                 '{ "name": "EimerPunks #',
-                _tokenId,
+                _tokenId.toString(),
                 '"',
                 '"description:": "Eimer Punks are randomized Avataaars stored on chain to teach DApp development on Eimer"',
                 '"image": "',
